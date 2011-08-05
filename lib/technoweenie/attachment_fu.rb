@@ -358,8 +358,12 @@ module Technoweenie # :nodoc:
       # An array of all the tempfile objects is stored so that the Tempfile instance is held on to until
       # it's not needed anymore.  The collection is cleared after saving the attachment.
       def temp_path
-        p = temp_paths.first
-        p.respond_to?(:path) ? p.path : p.to_s
+          p = temp_paths.first
+          if p.is_a?(ActionDispatch::Http::UploadedFile) # Rails 3.0.3 compatability fix
+            p.tempfile.path
+          else
+            p.respond_to?(:path) ? p.path : p.to_s
+          end
       end
 
       # Gets an array of the currently used temp paths.  Defaults to a copy of #full_filename.
@@ -409,7 +413,7 @@ module Technoweenie # :nodoc:
 
         def sanitize_filename(filename)
           return unless filename
-          returning filename.strip do |name|
+           filename.strip.tap do |name|
             # NOTE: File.basename doesn't work right with Windows paths on Unix
             # get only the filename, not the whole path
             name.gsub! /^.*(\\|\/)/, ''
