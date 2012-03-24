@@ -116,8 +116,8 @@ module Technoweenie # :nodoc:
           end
 
           begin
-            @@cloudfiles_config_path = base.attachment_options[:cloudfiles_config_path] || (RAILS_ROOT + '/config/rackspace_cloudfiles.yml')
-            @@cloudfiles_config = @@cloudfiles_config = YAML.load(ERB.new(File.read(@@cloudfiles_config_path)).result)[RAILS_ENV].symbolize_keys
+            @@cloudfiles_config_path = base.attachment_options[:cloudfiles_config_path] || (Rails.root + '/config/rackspace_cloudfiles.yml')
+            @@cloudfiles_config = @@cloudfiles_config = YAML.load(ERB.new(File.read(@@cloudfiles_config_path)).result)[Rails.env].symbolize_keys
           rescue
             #raise ConfigFileNotFoundError.new('File %s not found' % @@cloudfiles_config_path)
           end
